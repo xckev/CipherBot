@@ -46,7 +46,7 @@ class UtilsAndMiscellaneous(commands.Cog):
         if(isinstance(error, MissingPermissions)):
             await ctx.send("You don't have permission to kick people!")
         else:
-            print(error)
+            await ctx.send("Couldn't kick that user.")
 
     @commands.command()
     @has_permissions(ban_members = True)
@@ -61,7 +61,7 @@ class UtilsAndMiscellaneous(commands.Cog):
         if(isinstance(error, MissingPermissions)):
             await ctx.send("You don't have permission to ban people!")
         else:
-            print(error)
+            await ctx.send("Couldn't ban that user.")
 
     @commands.command()
     @commands.is_owner()
