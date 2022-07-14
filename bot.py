@@ -10,12 +10,13 @@ intnts.members = True
 
 load_dotenv()
 Token = os.getenv('bot_token')
+appid = os.getenv('app_id')
 
 desc = '''Python Message Encryption Bot'''
 
 class CipherBot(commands.Bot):
     def __init__(self):
-        super().__init__(command_prefix='$', intents=intnts, application_id=996571275919097898)
+        super().__init__(command_prefix='$', intents=intnts, application_id=appid)
 
     async def setup_hook(self):
         await self.load_extension(f"cogs.UtilsAndMiscellaneous")
