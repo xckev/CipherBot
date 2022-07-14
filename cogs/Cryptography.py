@@ -850,16 +850,30 @@ def schnorr_verify(msg: bytes, pk: Ed25519, sig: Tuple[Ed25519, int]) -> bool:
 class Cryptography(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
+        self.key_storage = {}
         
     @commands.command()
     async def keygen(self, ctx):
-        return None
+        sender = ctx.author
+        keys = diffie_hellman_key_gen()
+        #sk = keys[0]
+        #pk = keys[1]
+        self.key_storage[sender] = keys
+        await ctx.send("Keys generated!")
     
     @app_commands.command(name = "encrypt", description = "Encrypt a message to send to someone!")
     async def encrypt(self, interaction: discord.Interaction, message: str, recipient: discord.Member):
         sender = interaction.user
         print(f'{sender} used encrypt')
-        await interaction.response.send_message(f'you said {message} to {recipient}', ephemeral=True)
+        mykeys = self.key_storage[sender]
+        theirkeys = self.key_storage[recipient]
+        mysk = mykeys[0]
+        theirpk = theirkeys[1]
+        #sharedkey = diffie_hellman_derive_shared(mysk, theirpk)
+        messagebytes = message.encode()
+        ct = public_key_encrypt(theirpk, messagebytes)[1]
+        ctstr = ct.decode()
+        await interaction.response.send_message(f'{ctstr} is your ciphertext. Paste it into a channel for {recipient} to decrypt!', ephemeral=True)
       
     @app_commands.command(name = "decrypt", description = "Decrypt a message that send to someone!")
     async def decrypt(self, interaction: discord.Interaction, message: str):

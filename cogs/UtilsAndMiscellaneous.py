@@ -66,7 +66,7 @@ class UtilsAndMiscellaneous(commands.Cog):
     @commands.command()
     @commands.is_owner()
     async def shutdown(self, ctx):
-        await ctx.send("CipherBot is now offline.")
+        await ctx.send("CipherBot is now offline. All keys must be regenerated once CipherBot is online again.")
         exit()
         
 async def setup(bot):
