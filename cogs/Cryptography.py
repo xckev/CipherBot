@@ -846,8 +846,9 @@ class Cryptography(commands.Cog):
             #Public Key Decryption process
             theirpk = self.key_storage[sender][1]
             print("ct as string:", ciphertext)
-            temp = ciphertext[1:]
-            ct = temp.encode("unicode_escape")
+            ###temp1 = ciphertext[2:-1]
+            ###temp2 = str(temp1.encode("unicode_escape"))
+            ct = eval(repr(ciphertext))
             print("ct as bytes:", ct)
             mysk = self.key_storage[me][0]
             k = daisy_chain_hash((theirpk**mysk).to_bytes())
