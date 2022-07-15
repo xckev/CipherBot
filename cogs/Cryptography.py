@@ -702,26 +702,6 @@ def daisy_chain_hash(data: bytes) -> bytes:
     return a
 
 
-def diffie_hellman_key_gen() -> Tuple[int, Ed25519]:
-    """
-    Generate a Diffie-Hellman secret-key, public-key pair.
-    The secret key (sk) is a random integer from {0, 1, ..., order-1}.
-    The public key (pk) is the group generator raised to sk.
-
-    Tests:
-    The generator ** sk should be pk:
-    >>> sk, pk = diffie_hellman_key_gen()
-    >>> Ed25519.generator() ** sk == pk
-    True
-    100 runs should give 100 different secret keys:
-    >>> len(set(diffie_hellman_key_gen()[0] for _ in range(100)))
-    100
-    """
-    sk = randint(0, Ed25519.order - 1)
-    pk = Ed25519.generator() ** sk
-    return (sk, pk)
-
-
 def diffie_hellman_derive_shared(sk: int, pk: Ed25519) -> bytes:
     r"""
     Generate a Diffie-Hellman shared key from your sk and their pk.
@@ -743,52 +723,6 @@ def diffie_hellman_derive_shared(sk: int, pk: Ed25519) -> bytes:
     b'd\xc7T\xdd\x0e\xbf\xb4\xe6F\xd9\xa8\xac\x16\xa0\xbf\x1d\x15{*)\xaa\x19\xb1\x17\x03vs\xcb\x07\x9e\xbaQ'
     """
     return daisy_chain_hash((pk**sk).to_bytes())
-
-
-def public_key_encrypt(pk: Ed25519, m: bytes) -> Tuple[Ed25519, bytes]:
-    """Perform a Diffie-Hellman-based public key encryption.
-    See the notes for the algorithm to implement.
-
-    Use:
-        * `Ed25519`
-        * `daisy_chain_hash`
-        * `stream_cipher_encrypt`
-
-    Since encryption is randomized, different encryptions of the same message
-    aren't equal!
-    >>> sk, pk = diffie_hellman_key_gen()
-    >>> public_key_encrypt(pk, b'hi') == public_key_encrypt(pk, b'hi')
-    False
-    It's hard to test this function any further on its own. One you've
-    implemented `public_key_dec`, run its tests.
-    """
-    x = randint(0, Ed25519.order - 1)
-    k = daisy_chain_hash((pk**x).to_bytes())
-    c = stream_cipher_encrypt(m, k)
-    return (Ed25519.generator() ** x, c)
-
-
-def public_key_decrypt(sk: int, ct: Tuple[Ed25519, bytes]) -> bytes:
-    """Perform a Diffie-Hellman-based public key decryption.
-
-    See the notes for the algorithm to implement.
-
-    Use:
-        * `daisy_chain_hash`
-        * `stream_cipher_decrypt`
-
-    Testing and encryption and decryption:
-
-    >>> sk, pk = diffie_hellman_key_gen()
-    >>> ct = public_key_encrypt(pk, b'test message')
-    >>> public_key_decrypt(sk, ct)
-    b'test message'
-
-    """
-    pk, c = ct
-    k = daisy_chain_hash((pk**sk).to_bytes())
-    m = stream_cipher_decrypt(c, k)
-    return m
 
 
 def hash_to_ed25519_exp(i: bytes):
@@ -846,40 +780,84 @@ def schnorr_verify(msg: bytes, pk: Ed25519, sig: Tuple[Ed25519, int]) -> bool:
     x = hash_to_ed25519_exp(msg + pk.to_bytes() + R.to_bytes())
     return pk**x * R == Ed25519.generator() ** z
 
-
+'''
+------------------------------
+'''
 class Cryptography(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.key_storage = {}
-        
+    
+    def diffie_hellman_key_gen(self):
+        """
+        Generate a Diffie-Hellman secret-key, public-key pair.
+        The secret key (sk) is a random integer from {0, 1, ..., order-1}.
+        The public key (pk) is the group generator raised to sk.
+
+        Tests:
+        The generator ** sk should be pk:
+        >>> sk, pk = diffie_hellman_key_gen()
+        >>> Ed25519.generator() ** sk == pk
+        True
+        100 runs should give 100 different secret keys:
+        >>> len(set(diffie_hellman_key_gen()[0] for _ in range(100)))
+        100
+        """
+        sk = randint(0, Ed25519.order - 1)
+        pk = Ed25519.generator() ** sk
+        return [sk, pk]
+
     @commands.command()
     async def keygen(self, ctx):
         sender = ctx.author
-        keys = diffie_hellman_key_gen()
+        keys = self.diffie_hellman_key_gen()
         #sk = keys[0]
         #pk = keys[1]
         self.key_storage[sender] = keys
+        print(self.key_storage)
         await ctx.send("Keys generated!")
     
+
     @app_commands.command(name = "encrypt", description = "Encrypt a message to send to someone!")
     async def encrypt(self, interaction: discord.Interaction, message: str, recipient: discord.Member):
         sender = interaction.user
         print(f'{sender} used encrypt')
-        mykeys = self.key_storage[sender]
-        theirkeys = self.key_storage[recipient]
-        mysk = mykeys[0]
-        theirpk = theirkeys[1]
-        #sharedkey = diffie_hellman_derive_shared(mysk, theirpk)
-        messagebytes = message.encode()
-        ct = public_key_encrypt(theirpk, messagebytes)[1]
-        ctstr = ct.decode()
-        await interaction.response.send_message(f'{ctstr} is your ciphertext. Paste it into a channel for {recipient} to decrypt!', ephemeral=True)
-      
-    @app_commands.command(name = "decrypt", description = "Decrypt a message that send to someone!")
-    async def decrypt(self, interaction: discord.Interaction, message: str):
-        sender = interaction.user
-        print(f'{sender} used decrypt')
-        await interaction.response.send_message(f'Sender said {message} to you', ephemeral=True)
+        if(recipient in self.key_storage and sender in self.key_storage):
+
+            #Public Key Encryption process
+            theirpk = self.key_storage[recipient][1]
+            messagebytes = message.encode()
+            mysk = self.key_storage[sender][0]
+            k = daisy_chain_hash((theirpk**mysk).to_bytes())
+            ct = stream_cipher_encrypt(messagebytes, k)
+            #print("decoding", ct)
+            #ctstr = str(ct)
+
+            await interaction.response.send_message(f'{ct} is your ciphertext. Paste it into a channel for {recipient} to decrypt!', ephemeral=True)
+        else:
+            await interaction.response.send_message(f'Both parties must use $keygen before encryption.', ephemeral=True)
+
+       
+    @app_commands.command(name = "decrypt", description = "Decrypt a message that someone sent!")
+    async def decrypt(self, interaction: discord.Interaction, ciphertext: str, sender: discord.Member):
+        me = interaction.user
+        print(f'{me} used decrypt')
+        if(me in self.key_storage and sender in self.key_storage):
+            #Public Key Decryption process
+            theirpk = self.key_storage[sender][1]
+            print("ct as string:", ciphertext)
+            temp = ciphertext[1:]
+            ct = temp.encode("unicode_escape")
+            print("ct as bytes:", ct)
+            mysk = self.key_storage[me][0]
+            k = daisy_chain_hash((theirpk**mysk).to_bytes())
+            msg = stream_cipher_decrypt(ct, k)
+            print("decoding", msg)
+            #msgtxt = msg.decode()
+
+            await interaction.response.send_message(f'{sender} sent {msg} to you', ephemeral=True)
+        else:
+            await interaction.response.send_message(f'Both parties must use $keygen before decryption.', ephemeral=True)
 
 async def setup(bot):
     await bot.add_cog(Cryptography(bot))
