@@ -4,7 +4,7 @@ from discord import app_commands
 import json
 import requests
 import aiohttp
-
+import binascii
 import argparse
 import pickle
 import random
@@ -24,21 +24,16 @@ Encryption and decryption of messages
 def compress(a: bytes, b: bytes) -> bytes:
     """Given two length-32 byte sequences, compress them into a single
     length-32 byte sequences.
-
     This function is collision-resistent.
-
     Note: the implementation is based on SHA-256.
-
     >>> compress(b"0"*32, "a"*32)
     Traceback (most recent call last):
       ...
     ValueError: Non-bytes argument
-
     >>> compress(b"0"*32, b"0"*31)
     Traceback (most recent call last):
       ...
     ValueError: Non-length-32 argument
-
     >>> compress(b"0"*32, b"0"*32).hex()
     '60e05bd1b195af2f94112fa7197a5c88289058840ce7c6df9693756bc6250f55'
     """
@@ -56,21 +51,14 @@ class IntMod:
     def __init__(self, value: int, modulus: int):
         """
         Create an `IntMod`.
-
-        You must reduce value modulo `modulus` before storing it.
-
         >>> IntMod(5, 7)
         IntMod(5, 7)
-
         >>> IntMod(11, 7)
         IntMod(4, 7)
-
         >>> IntMod(-1, 7)
         IntMod(6, 7)
-
         >>> IntMod(7, 7)
         IntMod(0, 7)
-
         """
         # Do not change.
         self.value = value % modulus
@@ -83,20 +71,12 @@ class IntMod:
     def __add__(self, other: Union[int, "IntMod"]) -> "IntMod":
         """
         Add an `IntMod` and another `IntMod` or an integer.
-
-        You should use:
-            * `isinstance(other, int)` and
-            * `isinstance(other, IntMod)`
-
         >>> IntMod(5, 7) + IntMod(2, 7)
         IntMod(0, 7)
-
         >>> IntMod(3, 7) + IntMod(3, 7)
         IntMod(6, 7)
-
         >>> IntMod(3, 7) + 3
         IntMod(6, 7)
-
         >>> 3 + IntMod(3, 7)
         IntMod(6, 7)
         """
@@ -114,16 +94,12 @@ class IntMod:
     def __mul__(self, other: Union[int, "IntMod"]) -> "IntMod":
         """
         Multiply an `IntMod` and another `IntMod` or an integer.
-
         >>> IntMod(5, 7) * IntMod(2, 7)
         IntMod(3, 7)
-
         >>> IntMod(3, 7) * IntMod(3, 7)
         IntMod(2, 7)
-
         >>> IntMod(3, 7) * 3
         IntMod(2, 7)
-
         >>> 3 * IntMod(3, 7)
         IntMod(2, 7)
         """
@@ -138,13 +114,10 @@ class IntMod:
     def __truediv__(self, other: Union[int, "IntMod"]) -> "IntMod":
         """
         Multiply an `IntMod` and another `IntMod` or an integer.
-
         >>> IntMod(5, 7) / IntMod(2, 7)
         IntMod(6, 7)
-
         >>> IntMod(3, 7) / IntMod(3, 7)
         IntMod(1, 7)
-
         >>> IntMod(3, 7) / 3
         IntMod(1, 7)
         """
@@ -158,7 +131,6 @@ class IntMod:
 
     def __pow__(self, other: int) -> "IntMod":
         """Raise an `IntMod` to the power `other`.
-
         >>> IntMod(2, 7) ** 1
         IntMod(2, 7)
         >>> IntMod(2, 7) ** 2
@@ -205,7 +177,6 @@ class IntMod:
 
 class Ed25519:
     """A point on the twisted edwards curve, "edwards25519".
-
     See [RFC7748](https://datatracker.ietf.org/doc/html/rfc7748#section-4.1) for a specification.
     """
 
@@ -241,7 +212,6 @@ class Ed25519:
     @classmethod
     def generator(cls) -> "Ed25519":
         """Get the generator of the group
-
         >>> Ed25519.identity() * Ed25519.generator()
         Ed25519.generator()
         """
@@ -253,7 +223,6 @@ class Ed25519:
     @classmethod
     def identity(cls) -> "Ed25519":
         """Get the identity of the group
-
         >>> Ed25519.identity() * Ed25519.generator()
         Ed25519.generator()
         """
@@ -261,7 +230,6 @@ class Ed25519:
 
     def __mul__(self, other: "Ed25519") -> "Ed25519":
         """Perform the group operation.
-
         >>> Ed25519.identity() * Ed25519.identity()
         Ed25519.identity()
         >>> Ed25519.identity() * Ed25519.generator()
@@ -291,7 +259,6 @@ class Ed25519:
 
     def inverse(self) -> "Ed25519":
         """Get the inverse of a group element
-
         >>> g = Ed25519.generator() ** 5
         >>> g * g.inverse()
         Ed25519.identity()
@@ -301,7 +268,6 @@ class Ed25519:
     def __pow__(self, other: Union[int, IntMod]) -> "Ed25519":
         """Raise a group element to a power. The power can be an integer or an
         integer modulo the group order.
-
         >>> gen = Ed25519.generator()
         >>> ga = gen ** 3
         >>> ga ** 2 == gen ** 6
@@ -335,7 +301,6 @@ class Ed25519:
 
     def to_bytes(self) -> bytes:
         """Get this group element as bytes.
-
         >>> Ed25519.generator().to_bytes()
         b'Ed25519.generator()'
         >>> (Ed25519.generator() ** 2).to_bytes()
@@ -361,9 +326,7 @@ class ChaCha20State(NamedTuple):
 
     def qr(self, a: int, b: int, c: int, d: int):
         """Quarter round function
-
         Test case from RFC7539 section 2.1.1
-
         >>> st = ChaCha20State([0x11111111, 0x01020304, 0x9b8d6f43, 0x01234567])
         >>> st.qr(0, 1, 2, 3)
         >>> assert st.data == [0xea2a92f4, 0xcb1cf8ce, 0x4581472e, 0x5881c4bb]
@@ -380,7 +343,6 @@ class ChaCha20State(NamedTuple):
     @classmethod
     def init(cls, key: bytes, counter: int, nonce: bytes) -> "ChaCha20State":
         """Initialize the ChaCha20 state
-
         >>> k = bytes.fromhex("00 01 02 03 04 05 06 07 08 09 0a 0b 0c 0d 0e 0f 10 11 12 13 14 15 16 17 18 19 1a 1b 1c 1d 1e 1f")
         >>> n = bytes.fromhex("00 00 00 09 00 00 00 4a 00 00 00 00")
         >>> c = 1
@@ -435,27 +397,20 @@ class ChaCha20State(NamedTuple):
 
 def prg(seed: bytes, n: int) -> bytes:
     """Generate `n` bytes from a PRG with `seed` (a length-32 byte sequence).
-
     Note: the implementation is based on ChaCha20, but this **is not** a secure
     stream cipher.
-
-
     >>> prg("a", 5)
     Traceback (most recent call last):
       ...
     ValueError: Seed is not a byte sequence
-
     >>> prg(b"0", 5)
     Traceback (most recent call last):
       ...
     ValueError: Seed has length 1. It should be 32.
-
     >>> prg(b"0" * 32, 5).hex()
     '5408783b02'
-
     >>> prg(b"0" * 32, 6).hex()
     '5408783b02a4'
-
     >>> for i in range(10):
     ...   assert len(prg(b"0" * 32, i)) == i
     ...   assert prg(b"0" * 32, i) == prg(b"0" * 32, i+1)[:i]
@@ -474,16 +429,9 @@ def prg(seed: bytes, n: int) -> bytes:
 
 def random_bytes(n: int) -> bytes:
     """Generate n random bytes.
-
-    Useful tools:
-    * `random.randint`/`random.getrandbits`
-    * the `bytes` constructor when given a list of numbers between 0 and 255
-
     >>> bytes([97, 98])
     b'ab'
-
     Actual tests:
-
     >>> 0 <= random_bytes(5)[0] < 256
     True
     >>> len(random_bytes(4))
@@ -495,16 +443,6 @@ def random_bytes(n: int) -> bytes:
 
 def bytes_to_bitstring(bs: bytes) -> str:
     """Return a bitstring that is equivalent to this byte-sequence.
-
-    Each byte should be converted to an 8-bit binary string (that represents
-    the binary number equal to the bytes), and those strings should be
-    concatenated together.
-
-    Thus, our bitstring is "little endian".
-
-    To get the 8-bit binary number, try using a python format string like shown
-    below:
-
     >>> n = 7
     >>> f'{n:b}'
     '111'
@@ -512,9 +450,7 @@ def bytes_to_bitstring(bs: bytes) -> str:
     '   111'
     >>> f'{n:06b}'
     '000111'
-
     Actual tests:
-
     >>> bytes_to_bitstring(b"a")
     '01100001'
     >>> bytes_to_bitstring(b"\x01\x02")
@@ -527,23 +463,13 @@ def bytes_to_bitstring(bs: bytes) -> str:
 
 def bitstring_to_bytes(bits: str) -> bytes:
     """Return a byte sequence that is equivalent to this bitstring.
-
-    This should be an inverse function for bytes_to_bitstring.
-
-    Each 8-bit binary sub-string should be converted to a number, and these
-    numbers give the bytes.
-
-    Useful tools:
-
     >>> int('11', 2)
     3
     >>> int('1001', 2)
     9
     >>> int('00001111', 2)
     15
-
     Actual tests:
-
     >>> bitstring_to_bytes(bytes_to_bitstring(b'a'))
     b'a'
     >>> bitstring_to_bytes(bytes_to_bitstring(b'ab'))
@@ -557,7 +483,6 @@ def bitstring_to_bytes(bits: str) -> bytes:
 
 def xor(bit0: str, bit1: str) -> str:
     """Given two bits (as strings), compute the xor:
-
     >>> xor('0', '0')
     '0'
     >>> xor('0', '1')
@@ -574,7 +499,6 @@ def xor(bit0: str, bit1: str) -> str:
 
 def bitstring_xor(bits0: str, bits1: str) -> str:
     """Given two bitstrings of equal length, compute the bit-wise xor (also a bitstring).
-
     >>> bitstring_xor('0', '0')
     '0'
     >>> bitstring_xor('0011', '0101')
@@ -587,9 +511,6 @@ def bitstring_xor(bits0: str, bits1: str) -> str:
 
 def one_time_pad_encrypt(msg: bytes, key: bytes) -> bytes:
     """Encrypt the msg using a one-time-pad with this key.
-
-    Recall: the idea is to XOR the msg and key together...
-
     >>> one_time_pad_encrypt(b'hi', bytes([0, 0]))
     b'hi'
     >>> one_time_pad_encrypt(b'hi', b'\x50\x78') == b'8\x11'
@@ -605,7 +526,6 @@ def one_time_pad_encrypt(msg: bytes, key: bytes) -> bytes:
 
 def one_time_pad_decrypt(ct: bytes, key: bytes) -> bytes:
     """Decrypt the ciphertext using key.
-
     >>> k = random_bytes(5)
     >>> one_time_pad_decrypt(one_time_pad_encrypt(b"what!", k), k)
     b'what!'
@@ -621,12 +541,7 @@ def one_time_pad_decrypt(ct: bytes, key: bytes) -> bytes:
 
 
 def stream_cipher_encrypt(msg: bytes, key: bytes) -> bytes:
-    r"""Encrypt the msg using a one-time-pad with this key.
-
-    Recall: the idea is to use `prg` to expand the key into a one-time
-    pad key. You must use the first `len(msg)` bytes from the PRG for the test
-    below to pass.
-
+    """Encrypt the msg using a one-time-pad with this key.
     >>> stream_cipher_encrypt(b'hi', b"0" * 32)
     b'<a'
     """
@@ -636,8 +551,7 @@ def stream_cipher_encrypt(msg: bytes, key: bytes) -> bytes:
 
 
 def stream_cipher_decrypt(ct: bytes, key: bytes) -> bytes:
-    r"""Decrypt the ciphertext using key.
-
+    """Decrypt the ciphertext using key.
     >>> k = random_bytes(32)
     >>> stream_cipher_decrypt(stream_cipher_encrypt(b"what!", k), k)
     b'what!'
@@ -654,13 +568,7 @@ def stream_cipher_decrypt(ct: bytes, key: bytes) -> bytes:
 
 
 def pad_with_length(data: bytes) -> bytes:
-    r"""this function
-    (1) adds 0 bytes to the end of `data` until its length is a multiple of 32.
-    (2) formats the *original* length of `data` as a 256-bit binary string (use a format string)
-    (3) converts that binary string to 32 bytes (use `bitstring_to_bytes`)
-    (4) adds those to `data` too
-    (5) returns the result.
-
+    """
     >>> pad_with_length(b'')
     b'\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00'
     >>> pad_with_length(b'1')
@@ -676,19 +584,7 @@ def pad_with_length(data: bytes) -> bytes:
 
 
 def daisy_chain_hash(data: bytes) -> bytes:
-    r"""do a daisy-chain hash.
-
-    use `compress`.
-
-    pseudo-code:
-
-        function DaisyChainHash(data):
-            data = pad_with_length(data)
-            accumulator = 32 zero bytes
-            for block in (data as 32-byte blocks):
-                accumulator = compression(accumulator, block)
-            return accumulator
-
+    """do a daisy-chain hash.
     >>> daisy_chain_hash(b'')
     b"\xf5\xa5\xfdB\xd1j 0'\x98\xefn\xd3\t\x97\x9bC\x00=# \xd9\xf0\xe8\xea\x981\xa9'Y\xfbK"
     >>> daisy_chain_hash(b'hi there')
@@ -703,14 +599,8 @@ def daisy_chain_hash(data: bytes) -> bytes:
 
 
 def diffie_hellman_derive_shared(sk: int, pk: Ed25519) -> bytes:
-    r"""
+    """
     Generate a Diffie-Hellman shared key from your sk and their pk.
-    This should be done by
-    1. using Diffie-Hellman to derive a shared *group* element,
-    2. convering that element to bytes using `Ed25519.to_bytes` and then
-    3. hashing those bytes using `daisy_chain_hash`
-
-    Tests:
     >>> sk1, pk1 = diffie_hellman_key_gen()
     >>> sk2, pk2 = diffie_hellman_key_gen()
     >>> k1 = diffie_hellman_derive_shared(sk1, pk2)
@@ -728,14 +618,6 @@ def diffie_hellman_derive_shared(sk: int, pk: Ed25519) -> bytes:
 def hash_to_ed25519_exp(i: bytes):
     """
     Hash some bytes to the set {0, 1, ..., Ed25519.order - 1}.
-
-    You should do this by:
-        * hashing the bytes using `daisy_chain_hash`
-        * turning them into a bit-string using `bytes_to_bitstring`
-        * parsing the bitstring as a binary number using `int(..., 2)`
-        * wrapping that number modulo `Ed25519.order`.
-
-    >>> hash_to_ed25519_exp(b"")
     2554841951840909954615001403685847680091511646998319114990040052939481059432
     >>> hash_to_ed25519_exp(b"ok")
     1763860046563134991747666434043362542916729735611754082581760026286200666356
@@ -748,7 +630,6 @@ def hash_to_ed25519_exp(i: bytes):
 
 def schnorr_sign(msg: bytes, sk: int) -> Tuple[Ed25519, int]:
     """Sign a message using a schnorr signature.
-
     >>> sk, pk = diffie_hellman_key_gen()
     >>> R, z = schnorr_sign(b"ok", sk)
     >>> 0 <= z < Ed25519.order
@@ -791,11 +672,6 @@ class Cryptography(commands.Cog):
     def diffie_hellman_key_gen(self):
         """
         Generate a Diffie-Hellman secret-key, public-key pair.
-        The secret key (sk) is a random integer from {0, 1, ..., order-1}.
-        The public key (pk) is the group generator raised to sk.
-
-        Tests:
-        The generator ** sk should be pk:
         >>> sk, pk = diffie_hellman_key_gen()
         >>> Ed25519.generator() ** sk == pk
         True
@@ -811,10 +687,8 @@ class Cryptography(commands.Cog):
     async def keygen(self, ctx):
         sender = ctx.author
         keys = self.diffie_hellman_key_gen()
-        #sk = keys[0]
-        #pk = keys[1]
         self.key_storage[sender] = keys
-        print(self.key_storage)
+        #print(self.key_storage)
         await ctx.send("Keys generated!")
     
 
@@ -829,11 +703,12 @@ class Cryptography(commands.Cog):
             messagebytes = message.encode()
             mysk = self.key_storage[sender][0]
             k = daisy_chain_hash((theirpk**mysk).to_bytes())
-            ct = stream_cipher_encrypt(messagebytes, k)
+            ct = binascii.hexlify(stream_cipher_encrypt(messagebytes, k))
+            ciphertext = str(ct)[2:-1]
             #print("decoding", ct)
             #ctstr = str(ct)
 
-            await interaction.response.send_message(f'{ct} is your ciphertext. Paste it into a channel for {recipient} to decrypt!', ephemeral=True)
+            await interaction.response.send_message(f'{ciphertext} is your ciphertext. Paste it into a channel for {recipient} to decrypt!', ephemeral=True)
         else:
             await interaction.response.send_message(f'Both parties must use $keygen before encryption.', ephemeral=True)
 
@@ -845,18 +720,15 @@ class Cryptography(commands.Cog):
         if(me in self.key_storage and sender in self.key_storage):
             #Public Key Decryption process
             theirpk = self.key_storage[sender][1]
-            print("ct as string:", ciphertext)
-            ###temp1 = ciphertext[2:-1]
-            ###temp2 = str(temp1.encode("unicode_escape"))
-            ct = eval(repr(ciphertext))
-            print("ct as bytes:", ct)
+            #print("ct as string:", ciphertext)
+            ct = binascii.unhexlify(ciphertext)
+            #print("ct as bytes:", ct)
             mysk = self.key_storage[me][0]
             k = daisy_chain_hash((theirpk**mysk).to_bytes())
             msg = stream_cipher_decrypt(ct, k)
-            print("decoding", msg)
-            #msgtxt = msg.decode()
+            m = str(msg)[2:-1]
 
-            await interaction.response.send_message(f'{sender} sent {msg} to you', ephemeral=True)
+            await interaction.response.send_message(f'{sender} sent "{m}" to you', ephemeral=True)
         else:
             await interaction.response.send_message(f'Both parties must use $keygen before decryption.', ephemeral=True)
 
