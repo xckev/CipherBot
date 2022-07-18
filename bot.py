@@ -16,7 +16,7 @@ desc = '''Python Message Encryption Bot'''
 
 class CipherBot(commands.Bot):
     def __init__(self):
-        super().__init__(command_prefix='$', intents=intnts, application_id=appid)
+        super().__init__(command_prefix='$', help_command = None, intents=intnts, application_id=appid)
 
     async def setup_hook(self):
         await self.load_extension(f"cogs.UtilsAndMiscellaneous")
