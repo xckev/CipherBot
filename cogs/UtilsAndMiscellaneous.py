@@ -23,7 +23,7 @@ class UtilsAndMiscellaneous(commands.Cog):
     @commands.command()
     async def help(self, ctx):
         print(ctx.author, 'used help command')
-        await ctx.send("```Cryptography \n - $keygen :  Generates Diffie-Hellman private and public keys for encryption and decription. Must use this before /encrypt or /decrypt. \n - /encrypt :  Encrypt a secret message to send to a user of choice \n - /decrypt :  Decrypts ciphertext that was sent someone \n\nUtilities and Miscellaneous \n - $help :  CipherBot information and commands \n - $hello :  Exchange greetings with Cipherbot! \n - $kick :  Mention a user to kick from the server \n - $ban :  Mention a user to ban from the server \n - $shutdown :  CipherBot will go offline; only the bot's host may use this \n```")
+        await ctx.send("```Cryptography \n - $keygen :  Generates Diffie-Hellman private and public keys for encryption and decryption. Must use this before /encrypt or /decrypt. \n - /encrypt :  Encrypt a secret message to send to a user of choice \n - /decrypt :  Decrypts ciphertext that was sent by someone \n\nUtilities and Miscellaneous \n - $help :  CipherBot information and commands \n - $hello :  Exchange greetings with Cipherbot! \n - $kick :  Mention a user to kick from the server \n - $ban :  Mention a user to ban from the server \n - $shutdown :  CipherBot will go offline; only the bot's host may use this \n```")
 
     @commands.Cog.listener()
     async def on_message(self, message):
