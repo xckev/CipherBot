@@ -28,7 +28,7 @@ class Menu(View):
             await interaction.response.send_message(f"You voted {self.o1}", ephemeral=True)
             await interaction.followup.send(f"{self.o1}: {str(self.opt1count)}  |  {self.o2}: {str(self.opt2count)}")
 
-    @button(label=opt2, style=discord.ButtonStyle.red)
+    @button(label=opt2, style=discord.ButtonStyle.blurple)
     async def b2(self, interaction:Interaction, button:Button):
         if(interaction.user in self.voted):
             await interaction.response.send_message("You have already voted.", ephemeral=True)
@@ -36,7 +36,7 @@ class Menu(View):
             self.opt2count += 1
             self.voted.append(interaction.user)
             await interaction.response.send_message(f"You voted {self.o2}", ephemeral=True)
-            await interaction.followup.send(f"{self.o2}: {str(self.opt1count)}  |  {self.o2}: {str(self.opt2count)}")
+            await interaction.followup.send(f"{self.o1}: {str(self.opt1count)}  |  {self.o2}: {str(self.opt2count)}")
 
 class Voting(commands.Cog):
     def __init__(self, bot):
@@ -45,7 +45,7 @@ class Voting(commands.Cog):
     @commands.command()
     async def vote(self, ctx, duration: int, opt1: str, opt2: str, *, prompt: str):
         print(ctx.author, 'used vote command')
-        v = Menu(5*60, opt1, opt2)
+        v = Menu(duration*60, opt1, opt2)
         v.b1.label = opt1
         v.b2.label = opt2
         opt1 = "yes"
