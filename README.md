@@ -1,6 +1,6 @@
 # CipherBot
 
-An open source Discord bot written in python that does all things Cryptography. CipherBot helps you encrypt/decrypt secret messages to friends, vote in secure polls, check Cryptocurrency prices, and more!
+An open source Discord bot written in Python that does all things Cryptography. CipherBot helps you encrypt/decrypt secret messages to friends, vote in secure polls, check cryptocurrency prices, and more!
 
 ## Getting Started
  - [Invite this bot to your server!](https://discord.com/api/oauth2/authorize?client_id=996571275919097898&permissions=8&scope=bot)
@@ -27,7 +27,7 @@ We are fully committed to protecting to your privacy.
 - Public and private keys generated for each user
 
 #### Data Usage
-We use this data to encrypt/decrypt messages and to run our secure polls
+We use this data to encrypt/decrypt messages and to run our secure polls.
 
 #### Distribution
 We will not disclose any personal information without your consent and we do not share it with any external sites.
