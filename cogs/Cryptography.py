@@ -696,6 +696,10 @@ class Cryptography(commands.Cog):
     async def encrypt(self, interaction: discord.Interaction, message: str, recipient: discord.Member):
         sender = interaction.user
         print(f'{sender} used encrypt')
+        if(recipient not in self.key_storage or sender not in self.key_storage):
+            self.key_storage[sender] = self.diffie_hellman_key_gen()
+            self.key_storage[recipient] = self.diffie_hellman_key_gen()
+            
         if(recipient in self.key_storage and sender in self.key_storage):
 
             #Public Key Encryption process

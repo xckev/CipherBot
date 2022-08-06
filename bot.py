@@ -11,6 +11,7 @@ import aiohttp
 
 intnts = discord.Intents.all()
 intnts.members = True
+cryptocurrencykey = os.getenv('cryptocurrencykey')
 
 load_dotenv()
 Token = os.getenv('bot_token')
@@ -26,6 +27,7 @@ class CipherBot(commands.Bot):
         await self.load_extension(f"cogs.UtilsAndMiscellaneous")
         await self.load_extension(f"cogs.Cryptography")
         await self.load_extension(f"cogs.Voting")
+        await self.load_extension(f"cogs.Cryptocurrency")
         await self.tree.sync()
 
     async def close(self):
