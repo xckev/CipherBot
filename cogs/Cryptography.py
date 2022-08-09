@@ -60,12 +60,12 @@ class IntMod:
         >>> IntMod(7, 7)
         IntMod(0, 7)
         """
-        # Do not change.
+
         self.value = value % modulus
         self.modulus = modulus
 
     def __repr__(self) -> str:
-        # Do not change.
+
         return f"IntMod({self.value}, {self.modulus})"
 
     def __add__(self, other: Union[int, "IntMod"]) -> "IntMod":
@@ -145,7 +145,7 @@ class IntMod:
         return IntMod(pow(self.value, other, self.modulus), self.modulus)
 
     def __eq__(self, other: Union[int, "IntMod"]) -> bool:
-        # Equality definition. Do not change.
+        # Equality definition.
         if isinstance(other, IntMod):
             assert self.modulus == other.modulus
             return self.value == other.value
@@ -155,23 +155,23 @@ class IntMod:
             assert False, f"Can't compare {self} == {other}"
 
     def __sub__(self, other: Union[int, "IntMod"]) -> "IntMod":
-        # Subtraction definition. Do not change.
+        # Subtraction definition.
         return self + (-other)
 
     def __radd__(self, other: Union[int, "IntMod"]) -> "IntMod":
-        # Addition is commutative. Do not change.
+        # Addition is commutative.
         return self + other
 
     def __rmul__(self, other: Union[int, "IntMod"]) -> "IntMod":
-        # Multiplication is commutative. Do not change.
+        # Multiplication is commutative.
         return self * other
 
     def __req__(self, other: Union[int, "IntMod"]) -> bool:
-        # Equality is commutative. Do not change.
+        # Equality is commutative.
         return self == other
 
     def __rsub__(self, other: Union[int, "IntMod"]) -> "IntMod":
-        # Subtraction definition. Do not change.
+        # Subtraction definition.
         return -self + other
 
 
