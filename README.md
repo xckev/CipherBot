@@ -136,4 +136,4 @@ Public and private keys are generated only if a CipherBot encryption command is 
 CipherBot's features are not all completely secure from cryptographic attacks. Many of the implemented cryptographic algorithms are shallow or are emulations for academic purposes. We work within the boundaries given by the Discord.py API, and cannot ensure security from threats beyond other users in your Discord server. CipherBot is not intended for professional or truly secure settings.
  
  ## License
- MIT License
+ [MIT License](https://github.com/xckev/CipherBot/blob/master/LICENSE)
