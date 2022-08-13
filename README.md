@@ -2,7 +2,7 @@
  - [Invite this bot to your server!](https://discord.com/api/oauth2/authorize?client_id=996571275919097898&permissions=8&scope=bot)
  - [Github open source code](https://github.com/xckev/CipherBot)
  
-## Developers
+ ## Developers
  
  [Kevin Xiao](https://github.com/xckev)
  
