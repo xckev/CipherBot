@@ -3,17 +3,18 @@
  - [Github open source code](https://github.com/xckev/CipherBot)
  
  ## Developers
+ 
  [Kevin Xiao](https://github.com/xckev)
  
  Socials/Links: https://linktr.ee/xckev
  
- ## Commands
+## Commands
  
- ### Cryptography
+### Cryptography
  
  Cryptographic algorithms/functions and inspiration for these commands were taken from the [2022 Stanford Pre-Collegiate Summer Institute Cryptography and Cryptocurrency course](https://summerinstitutes.spcs.stanford.edu/courses/2022/cryptography-and-cryptocurrency). Here is the course content website: https://crypto.stanford.edu/spcs/
  
- #### $keygen
+#### $keygen
   
  Generates new Diffie-Hellman private and public keys for encryption and decryption. Execute often for better security. /encrypt calls this automatically if keys were not previously generated.
  
@@ -23,21 +24,21 @@
 
 This Khan Academy [link](https://www.khanacademy.org/computing/computer-science/cryptography/modern-crypt/v/diffie-hellman-key-exchange-part-2) is a simplified video demonstration. You may read more about Diffie-Hellman key exchange [here](https://en.wikipedia.org/wiki/Diffie%E2%80%93Hellman_key_exchange).
  
- #### /encrypt
+#### /encrypt
  
  Encrypt a secret message to send to a user of choice. This command does an undercover $keygen if both parties have not yet generated their encryption keys. 
  
  This command uses a shared key to encrypt plaintext into ciphertext. This is done by using a stream cipher, where a pseudo-random generator is applied on the key to generate a one-time-pad that is the same length in bytes as the plaintext. This one-time-pad is then XORed with the bytes of the plaintext to produce the ciphertext, which is displayed in hexadecimal.
  
- #### /decrypt
+#### /decrypt
  
  Decrypts ciphertext that was sent by someone.
  
  This command uses the shared key to decrypt ciphertext into plaintext. This is again done using a stream cipher, with the same one-time-pad XORed with the ciphertext as bytes. Converting back into ASCII characters, the command results in the original plaintext.
  
- ### Secure Voting
+### Secure Voting
  
- #### $vote \<duration> <option 1> <option 2> \<prompt>
+#### $vote \<duration> <option 1> <option 2> \<prompt>
  
  Creates a 2-option poll with a prompt that accepts submissions for a specified number of minutes. Use quotation marks to separate arguments that have spaces. No user will be able to see another's votes (exceptions exist for bot hosters).
  
@@ -131,5 +132,5 @@ Public and private keys are generated only if a CipherBot encryption command is 
 #### Disclaimer:
 CipherBot's features are not all completely secure from cryptographic attacks. Many of the implemented cryptographic algorithms are shallow or are emulations for academic purposes. We work within the boundaries given by the Discord.py API, and cannot ensure security from threats beyond other users in your Discord server. CipherBot is not intended for professional or truly secure settings.
  
- ## License
+## License
  [MIT License](https://github.com/xckev/CipherBot/blob/master/LICENSE)
