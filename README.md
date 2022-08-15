@@ -7,9 +7,7 @@ An open source Discord bot written in Python that does all things Cryptography. 
  - [Github open source code](https://github.com/xckev/CipherBot)
  
  ## Developers
- [Kevin Xiao](https://github.com/xckev)
- 
- Socials/Links: https://linktr.ee/xckev
+ [Kevin Xiao](https://xckev.github.io)
  
  ## Commands
  
