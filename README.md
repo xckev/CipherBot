@@ -20,5 +20,7 @@ Within process of developing better electronic voting systems, we must begin wit
 
 The accuracy, privacy, and verifiability criteria are largely dependent on cryptography. The cryptographic solutions that can be implemented for secure voting are fairly complicated, and not everyone can understand how they work. The point, however, is not for the public to understand the algorithms, but it is rather for the systems to be transparent. Therefore, it is possible to verify election integrity.
 
+Intrigued by the algorithms knowing the importance of secure elections, I started to work on CipherBot. CipherBot utilizes the Discord instant messaging social platform as a medium to implement encryption/decryption and emulate secure voting. The functionality of CipherBot is discussed in this next section.
+
 ## Cryptography
 
