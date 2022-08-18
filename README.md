@@ -13,7 +13,8 @@ Superior electronic voting systems are a fairly new topic of study, but quick de
 
 Within process of developing better electronic voting systems, we must begin with defining our criteria. What should our voting systems provide?
 
--	Accuracy
--	Secrecy
--	Verifiability
--	Usability 
+-	Accuracy: Votes cannot be altered, duplicated, or eliminated. Each vote must be counted as cast in the final tally.
+-	Privacy: Votes must never be shared with others. Secrecy of votes keep voters safe from being pressured and coerced.
+-	Verifiability: Voters can verify that their votes were counted correctly and included in the final tally
+-	Usability: Voting systems must be simple to use. Complexity should not be an obstacle to a fair vote.
+
