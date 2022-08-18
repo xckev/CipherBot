@@ -18,3 +18,7 @@ Within process of developing better electronic voting systems, we must begin wit
 -	Verifiability: Voters can verify that their votes were counted correctly and included in the final tally
 -	Usability: Voting systems must be simple to use. Complexity should not be an obstacle to a fair vote.
 
+The accuracy, privacy, and verifiability criteria are largely dependent on cryptography. The cryptographic solutions that can be implemented for secure voting are fairly complicated, and not everyone can understand how they work. The point, however, is not for the public to understand the algorithms, but it is rather for the systems to be transparent. Therefore, it is possible to verify election integrity.
+
+## Cryptography
+
