@@ -24,3 +24,16 @@ Intrigued by the algorithms knowing the importance of secure elections, I starte
 
 ## Cryptography
 
+This section will only give a quick overview of the cryptographic algorithms used in CipherBot and some others. For a more detailed explanation and links to further resources, refer to the README.md file on Github. 
+
+The first function of CipherBot is encryption/decryption of data. Specifically, users can encrypt standard ASCII text and send the hexadecimal encryptions as a message in a server. No one else will be able to decrypt the message other than the intended receiver. This is done using traditional Diffie-Hellman key exchange to generate a shared key between two parties with each party using a public and private key. Public key encryption then encrypts the message with the shared key.
+
+Encrypt(public key, message) = ciphertext
+
+Decrypt(secret key, ciphertext) = message
+
+ Diffie Hellman uses mathematical principles of exponentiation and modular arithmetic for two parties to achieve the same value without leaking important information that adversaries can use for an attack.
+ 
+Beneath the encryption and decryption algorithms lies functions that converts all data to bytes, makes the key just as long as the message with a pseudo-random generator, and XORs the key with the message (this is called a stream cipher).
+
+The reasons that it is extremely hard for an attacker to find the shared key can be explained by group theory (specifically groups of prime orders), and the naturally difficult problem of large prime numbers. 
