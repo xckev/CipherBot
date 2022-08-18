@@ -32,8 +32,43 @@ Encrypt(public key, message) = ciphertext
 
 Decrypt(secret key, ciphertext) = message
 
- Diffie Hellman uses mathematical principles of exponentiation and modular arithmetic for two parties to achieve the same value without leaking important information that adversaries can use for an attack.
+Diffie Hellman uses mathematical principles of exponentiation and modular arithmetic for two parties to achieve the same value without leaking important information that adversaries can use for an attack.
  
 Beneath the encryption and decryption algorithms lies functions that converts all data to bytes, makes the key just as long as the message with a pseudo-random generator, and XORs the key with the message (this is called a stream cipher).
 
 The reasons that it is extremely hard for an attacker to find the shared key can be explained by group theory (specifically groups of prime orders), and the naturally difficult problem of large prime numbers. 
+
+The algorithms and ideas presented above are all very standard and used in most secure computer networks.
+
+The next cryptographic function of CipherBot is a miniature implementation of a secure voting scheme. 
+There are many encryption schemes that have been developed for superior electronic elections. Just to list a few:
+
+-	Mix-networks
+-	Homomorphic encryption
+-	Blind signatures
+-	Verifiable secret sharing
+-	Secure Multi-Party Computation
+
+All these voting encryption schemes have their own strengths and weaknesses. Each perform either proficiently or poorly in areas such as universal usability, write-in ballots, efficient voting, and large-scale support.
+
+For CipherBot, I chose to use to use a combination of mix-networks and homomorphic encryption. Mix-networks are a set of servers that accept a list of votes and outputs them in a randomly permuted order. This effectively disconnects the voter from their vote, ensuring privacy. Below is a very simple visual of a mix-network:
+
+![image](https://user-images.githubusercontent.com/54916002/185511537-2d63a75d-ff7c-4ffd-a468-eb0ee9eca95b.png)
+
+Mix-networks are often paired together with some other encryption. There are re-encryption mix-nets, which rely on using public key encryption schemes within each mix and a shared decryption key among all the mix servers. Another type of mix-net is the shuffle decryption mix-net, that accepts votes as a collection of ciphertexts and outputs the votes as a randomly ordered list of plaintexts. For CipherBot, I decided to combine the mix-net permutations with homomorphic encryption. Homomorphic encryption allows for operations to be done on ciphertexts and for the correct result to remain after decryption. From the paper "A Comparative Study of Generic Cryptographic Models for Secure Electronic Voting" by several scholars from Ladoke Akintola University of Technology:
+
+"With homomorphic encryption there is an operation ⊕ defined on the message space and an operation ⊗ defined on the cipher space, such that the “product” of the encryptions of any two votes is the encryption of the “sum” of the votes, i.e.:
+
+EM1 ⊕ EM2 = E (M1 ⊗ M2)
+
+This property allows either to tally votes as aggregates or to combine shares of votes, without decrypting single votes"
+
+![image](https://user-images.githubusercontent.com/54916002/185511562-5cfad681-573d-4451-b57e-70fd1d1898e7.png)
+
+Above is a simple example of the homomorphic voting model. For CipherBot, the Microsoft SEAL Homomorphic Encryption library was used. It works properly, but the only exception is the speed of homomorphic encryption. With the runtime of SEAL being more than Discord's interaction time out, the demo.py file in Github serves as a demonstration of how it was supposed to work. I am currently working on using different libraries or techniques to bypass the interaction timing out.
+
+## Conclusion
+
+Building CipherBot has been an entertaining and informatative experience. The cryptographic algorithms implemented in CipherBot are fascinating to me and their ability to transparently secure large-scale elections is clear. The potential for governments all around the world to use these cutting-edge algorithms is evident, and it is just one example of the powerful intersection between technology and civics. 
+
+As a final reminder, CipherBot does not genuinely secure all the communications that are passed through it. It merely emulates many algorithms for academic purposes. Disclaimers are in the README.md.
