@@ -24,7 +24,7 @@ Intrigued by the algorithms knowing the importance of secure elections, I starte
 
 ## Cryptography
 
-This section will only give a quick overview of the cryptographic algorithms used in CipherBot and some others. For a more detailed explanation and links to further resources, refer to the README.md file on Github. 
+This section will only give a quick overview of the cryptographic algorithms used in CipherBot and some others. For a more detailed explanation and links to further resources, refer to the [README.md](https://github.com/xckev/CipherBot/blob/master/README.md) file on Github. 
 
 The first function of CipherBot is encryption/decryption of data. Specifically, users can encrypt standard ASCII text and send the hexadecimal encryptions as a message in a server. No one else will be able to decrypt the message other than the intended receiver. This is done using traditional Diffie-Hellman key exchange to generate a shared key between two parties with each party using a public and private key. Public key encryption then encrypts the message with the shared key.
 
@@ -71,4 +71,4 @@ Above is a simple example of the homomorphic voting model. For CipherBot, the Mi
 
 Building CipherBot has been an entertaining and informatative experience. The cryptographic algorithms implemented in CipherBot are fascinating to me and their ability to transparently secure large-scale elections is clear. The potential for governments all around the world to use these cutting-edge algorithms is evident, and it is just one example of the powerful intersection between technology and civics. 
 
-As a final reminder, CipherBot does not genuinely secure all the communications that are passed through it. It merely emulates many algorithms for academic purposes. Disclaimers are in the README.md.
+As a final reminder, CipherBot does not genuinely secure all the communications that are passed through it. It merely emulates many algorithms for academic purposes. Disclaimers are in the [README.md](https://github.com/xckev/CipherBot/blob/master/README.md).
