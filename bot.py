@@ -41,6 +41,6 @@ class CipherBot(commands.Bot):
         print(bot.user.id)
         print('----------')
 
-bot = CipherBot()
+bot=CipherBot()
 
 bot.run(Token)

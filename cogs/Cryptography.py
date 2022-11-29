@@ -730,7 +730,7 @@ class Cryptography(commands.Cog):
             mysk = self.key_storage[me][0]
             k = daisy_chain_hash((theirpk**mysk).to_bytes())
             msg = stream_cipher_decrypt(ct, k)
-            m = str(msg)[2:-1]
+            m= str(msg)[2:-1]
 
             await interaction.response.send_message(f'{sender} sent "{m}" to you', ephemeral=True)
         else:
