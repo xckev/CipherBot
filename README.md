@@ -1,4 +1,4 @@
-***Open source code and README.md can be found [here](https://github.com/xckev/CipherBot) or at the green button above.***
+***[Open source code and README.md can be found here on Github or at the green button above.](https://github.com/xckev/CipherBot)***
 
 ## The Problem
 
