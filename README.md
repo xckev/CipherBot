@@ -1,3 +1,5 @@
+***Open source code and README.md can be found [here](https://github.com/xckev/CipherBot) or at the green button above.***
+
 ## The Problem
 
 From Athens, Greece in 508 BCE to the United States in 2022, democracies have protected liberty and nurtured prosperity among people throughout history. Although no implementation of it is perfect, it is undeniable that democracy is the best form of government we've got. Not only does democracy allow everyone to have an equal voice, but it also makes way for flexibility because policies can remain representative of the constantly changing ideologies among the governed. Democracies have reduced state conflicts in number and size, encouraged citizens to educate themselves about societal issues, and reinforced justice and ethicality within people. Due to all the great perks that democracy brings, determining national policies through fair voting and elected officials is something that must remain protected.
