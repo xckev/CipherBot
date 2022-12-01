@@ -4,7 +4,7 @@
 
 Although no implementation of it is perfect, it is undeniable that democracy is the best form of government we’ve got. Not only does democracy allow everyone to have an equal voice, but it also makes way for flexibility because policies can remain representative of the constantly changing ideologies among the governed. Determining national policies through fair voting and elected officials is something that must remain protected.
 
-Unfortunately, election integrity has become a major concern as of late. Tensions regarding potential meddling our fraud were high during recent US presidential elections. The existence of inaccurate elections, or even just skepticism about election integrity, poses a danger to democracy. 
+Unfortunately, election integrity has become a major concern as of late. Tensions regarding potential meddling or fraud were high during recent US presidential elections. The existence of inaccurate elections, or even just skepticism about election integrity, poses a danger to democracy. 
 
 One area of skepticism is digital elections. Several democratic nations have started to incorporate some form of electronic or online voting into their elections. A common format of this is “black box” machines. Black box means that the algorithms used to hide, secure, and verify votes are undisclosed. With a need for better transparency and more trust in digital voting, we turn to technology for solutions.
 
