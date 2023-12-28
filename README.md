@@ -1,5 +1,7 @@
 ***Open source code and README.md can be found [here on Github](https://github.com/xckev/CipherBot) or at the green button above.***
 
+***2023 update: CipherBot is down indefinitely due to hosting costs. Self-hosting remains available.***
+
 ## The Problem
 
 Although no implementation of it is perfect, it is undeniable that democracy is the best form of government we’ve got. Not only does democracy allow everyone to have an equal voice, but it also makes way for flexibility because policies can remain representative of the constantly changing ideologies among the governed. Determining national policies through fair voting and elected officials is something that must remain protected.
